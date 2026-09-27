@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Your History</h2>
+
+{% if not reports %}
+    <p>No previous reports found. Run an analysis from the dashboard!</p>
+{% endif %}
+
+{% for r in reports %}
+<div class="card" style="margin-bottom: 20px;">
+    <p><strong>Resume Preview:</strong></p>
+    <p style="color: #666;">{{ r.resume }}...</p>
+    
+    {% if r.result.get('error') %}
+        <p style="color: red;">{{ r.result.get('error') }}</p>
+    {% else %}
+        <h3>Skills</h3>
+        <ul>
+            {% for s in r.result.get('skills', []) %}
+                <li>{{ s }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Missing Skills</h3>
+        <ul>
+            {% for s in r.result.get('missing_skills', []) %}
+                <li>{{ s }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Interview Questions</h3>
+        <ul>
+            {% for q in r.result.get('interview_questions', []) %}
+                <li>{{ q }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endfor %}
+{% endblock %}
