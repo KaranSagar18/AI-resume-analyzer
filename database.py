@@ -1,4 +1,3 @@
-import sqlite3
 from sqlalchemy import engine, create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 

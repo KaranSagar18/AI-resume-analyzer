@@ -66,13 +66,14 @@ async def signup_post(
     )
     db.add(new_user)
     db.commit()
-    return RedirectResponse("/login", status.HTTP_201_CREATED)
+    return RedirectResponse("/login?msg=Account+created+successfully!+Please+log+in", status.HTTP_303_SEE_OTHER)
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(
-    request : Request
+    request : Request,
+    msg : str | None = None
 ):
-    return templates.TemplateResponse(request,"login.html",{'error': None})
+    return templates.TemplateResponse(request,"login.html",{'error': None, 'msg' : msg})
 
 @app.post('/login', response_class= HTMLResponse)
 async def login_post(
@@ -111,7 +112,7 @@ async def dahboard_page(
     current_user : User | None = Depends(get_curr_user)
 ):
     if not current_user:
-        return RedirectResponse('/login',status.HTTP_401_UNAUTHORIZED)
+        return RedirectResponse('/login',status.HTTP_303_SEE_OTHER)
 
     return templates.TemplateResponse(
         request,
@@ -124,12 +125,12 @@ async def dashboard(
     request : Request,
     target_role : str = Form(...),
     resume_text : str | None = Form(None),
-    resume_file : UploadFile | None = Form(None),
-    current_user : User = Depends(get_curr_user),
+    resume_file : UploadFile | None = File(None),
+    current_user : User | None = Depends(get_curr_user),
     db : Session = Depends(get_db)
 ):
     if not current_user:
-        return RedirectResponse("/login",status.HTTP_401_UNAUTHORIZED)
+        return RedirectResponse("/login",status.HTTP_303_SEE_OTHER)
     extracted_content = (resume_text or "").strip()
     if resume_file and resume_file.filename:
         file_bytes = await resume_file.read() 
@@ -137,7 +138,7 @@ async def dashboard(
         if filename.endswith('.pdf'):
             reader = PyPDF2.PdfReader(io.BytesIO(file_bytes))
             extracted_content += "\n" + "\n".join([page.extract_text() or '' for page in reader.pages])
-        elif filename.endswith('.docx','.doc'):
+        elif filename.endswith(('.docx','.doc')):
             doc = docx.Document(io.BytesIO(file_bytes))
             extracted_content += "\n" + "\n".join([p.text for p in doc.paragraphs])
 
@@ -150,8 +151,9 @@ async def dashboard(
                 resume_text = extracted_content,
                 result = json.dumps(result)
             )
-            db.add(report)
-            db.commit()
+            if not result.get('error',None):
+                db.add(report)
+                db.commit()
         else:
             result = {"error": "Please provide resume text or upload a PDF/DOCX file."}
 
@@ -171,7 +173,7 @@ def history(
     db : Session = Depends(get_db)
 ):
     if not current_user:
-        return RedirectResponse("/login", status.HTTP_401_UNAUTHORIZED)
+        return RedirectResponse("/login", status.HTTP_303_SEE_OTHER)
     user_reports = current_user.reports
     reports_data = [
         {

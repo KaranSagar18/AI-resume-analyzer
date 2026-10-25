@@ -1,51 +1,121 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Welcome, {{ user }}</h2>
-<div class="card">
-    <h3>Resume Analyzer</h3>
-    <form method="post" enctype="multipart/form-data">
-        <textarea name="resume_text" rows="6" placeholder="Paste your resume text here (Optional)"></textarea>
-        <p>Or upload your resume in PDF or DOCX format:</p>
-        <input type="file" name="resume_file" accept=".pdf, .docx">
-        <input type="text" name="target_role" placeholder="Enter target role (e.g. Backend Engineer)" required>
-        <button type="submit">Analyze</button>
-    </form>
-
-    {% if result %}
-    <div style="margin-top: 25px;">
-        {% if result.get('error') %}
-            <p style="color: red;"><strong>An Error occurred:</strong> {{ result.get('error') }}</p>
-        {% else %}
-            <h3>Identified Skills</h3>
-            <ul>
-                {% for s in result.get('skills', []) %}
-                    <li>{{ s }}</li>
-                {% endfor %}
-            </ul>
-
-            <h3>Missing Skills</h3>
-            <ul>
-                {% for s in result.get('missing_skills', []) %}
-                    <li>{{ s }}</li>
-                {% endfor %}
-            </ul>
-
-            <h3>Roadmap</h3>
-            <ul>
-                {% for step in result.get('roadmap', []) %}
-                    <li>{{ step }}</li>
-                {% endfor %}
-            </ul>
-
-            <h3>Suggested Interview Questions</h3>
-            <ul>
-                {% for q in result.get('interview_questions', []) %}
-                    <li>{{ q }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
-    {% endif %}
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px;">
+    <h2>Dashboard</h2>
+    <span style="font-size: 13px; color: #64748b;">Logged in as: <strong>{{ user }}</strong></span>
 </div>
+
+<div class="card">
+    <h3 style="margin-bottom: 6px;">Evaluate Your Resume</h3>
+    <p style="font-size: 13px; color: #64748b; margin-bottom: 18px;">
+        Upload your document or paste raw text to run a tailored gap analysis against your target role.
+    </p>
+
+    <form method="post" enctype="multipart/form-data" id="analyzeForm">
+        <div class="form-group">
+            <label for="target_role">Target Role *</label>
+            <input 
+                type="text" 
+                id="target_role" 
+                name="target_role" 
+                placeholder="e.g. Python Backend Engineer, DevOps Engineer" 
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="resume_file">Upload Resume (PDF or DOCX)</label>
+            <input type="file" id="resume_file" name="resume_file" accept=".pdf, .docx, .doc">
+        </div>
+
+        <div class="form-group">
+            <label for="resume_text">Or Paste Resume Text</label>
+            <textarea 
+                id="resume_text" 
+                name="resume_text" 
+                placeholder="Paste experience, skills, and projects here..."
+            ></textarea>
+        </div>
+
+        <button type="submit" id="submitBtn">
+            <span class="spinner" id="btnSpinner"></span>
+            <span id="btnText">Run AI Analysis</span>
+        </button>
+    </form>
+</div>
+
+{% if result %}
+    {% if result.get('error') %}
+        <div class="alert alert-danger">
+            ⚠️ <strong>Analysis Error:</strong> {{ result.get('error') }}
+        </div>
+    {% else %}
+        <div class="card" style="margin-top: 30px;">
+            <h3 style="border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 18px;">
+                Evaluation Summary
+            </h3>
+
+            <div class="results-grid">
+                <!-- Identified Skills -->
+                <div class="result-box">
+                    <h4>✅ Existing Skills Found</h4>
+                    <div class="badge-list">
+                        {% for s in result.get('skills', []) %}
+                            <span class="badge badge-skill">{{ s }}</span>
+                        {% else %}
+                            <span style="font-size: 13px; color: #94a3b8;">None identified</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Missing Skills -->
+                <div class="result-box">
+                    <h4>⚠️ Missing Skills & Gaps</h4>
+                    <div class="badge-list">
+                        {% for s in result.get('missing_skills', []) %}
+                            <span class="badge badge-missing">{{ s }}</span>
+                        {% else %}
+                            <span style="font-size: 13px; color: #16a34a;">No critical gaps detected!</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preparation Roadmap -->
+            <div class="result-box" style="margin-top: 20px;">
+                <h4>🗺️ Strategic Roadmap</h4>
+                <ol class="step-list">
+                    {% for step in result.get('roadmap', []) %}
+                        <li>{{ step }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+
+            <!-- Interview Questions -->
+            <div class="result-box" style="margin-top: 20px;">
+                <h4>🎯 Recommended Interview Prep Questions</h4>
+                <ul class="question-list">
+                    {% for q in result.get('interview_questions', []) %}
+                        <li>{{ q }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
+
+<script>
+    const form = document.getElementById('analyzeForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const btnText = document.getElementById('btnText');
+
+    form.addEventListener('submit', function() {
+        // Show loading state and prevent repeated submits
+        submitBtn.disabled = true;
+        btnSpinner.style.display = 'inline-block';
+        btnText.textContent = 'Analyzing with Gemini...';
+    });
+</script>
 {% endblock %}

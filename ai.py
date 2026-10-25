@@ -5,17 +5,15 @@ from google import genai
 from google.genai import types
 from pydantic import BaseModel
 
-dotenv.load_dotenv()
-
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-
-client = genai.Client(api_key=GEMINI_API_KEY) 
-
 class ResumeAnalysis(BaseModel):
     skills : list[str]
     missing_skills : list[str]
     roadmap : list[str]
     interview_questions : list[str]
+
+dotenv.load_dotenv()
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+client = genai.Client(api_key=GEMINI_API_KEY) 
 
 def analyze_resume(resume_text: str, target_role: str):
     prompt = f'''
@@ -33,7 +31,7 @@ def analyze_resume(resume_text: str, target_role: str):
     '''
     try:
         response = client.models.generate_content(
-            model='gemini-3.5-flash',
+            model='gemini-3.5-flash-lite',
             contents= prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",

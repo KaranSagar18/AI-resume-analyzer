@@ -1,6 +1,22 @@
 /* ==========================================================================
-   Global Resets & Base Styles
+   Global Resets & Design Tokens
    ========================================================================== */
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --bg-main: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --badge-skill-bg: #dbeafe;
+    --badge-skill-text: #1e40af;
+    --badge-missing-bg: #fee2e2;
+    --badge-missing-text: #991b1b;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -9,47 +25,59 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: #f5f7fb;
-    color: #1a1a1a;
+    background-color: var(--bg-main);
+    color: var(--text-main);
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* Reusable layout container */
 .container {
-    width: 85%;
-    max-width: 900px;
+    width: 90%;
+    max-width: 960px;
     margin: 0 auto;
 }
 
 main.container {
-    padding: 40px 0;
+    padding: 35px 0 60px;
     flex: 1;
 }
 
 /* ==========================================================================
-   Navigation & Header
+   Navigation
    ========================================================================== */
 header {
-    background-color: #1e293b;
-    padding: 16px 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    background-color: #0f172a;
+    padding: 14px 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.nav-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-logo {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: -0.3px;
 }
 
 nav {
     display: flex;
-    justify-content: flex-end;
-    gap: 25px;
+    gap: 20px;
 }
 
 nav a {
-    color: #cbd5e1;
+    color: #94a3b8;
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
-    transition: color 0.2s ease;
+    transition: color 0.15s ease;
 }
 
 nav a:hover {
@@ -57,42 +85,82 @@ nav a:hover {
 }
 
 /* ==========================================================================
-   Authentication Pages (Login & Signup)
+   Alerts & Notifications
+   ========================================================================== */
+.alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-danger {
+    background-color: #fef2f2;
+    color: var(--danger);
+    border: 1px solid #fecaca;
+}
+
+.alert-success {
+    background-color: #f0fdf4;
+    color: var(--success);
+    border: 1px solid #bbf7d0;
+}
+
+/* ==========================================================================
+   Auth Layout (Login & Sign Up)
    ========================================================================== */
 .auth-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 70vh;
+    min-height: 65vh;
 }
 
 .auth-card {
-    background: #ffffff;
+    background: var(--card-bg);
     width: 100%;
-    max-width: 420px;
-    padding: 35px 30px;
+    max-width: 400px;
+    padding: 32px 28px;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 }
 
 .auth-card h2 {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text-main);
     margin-bottom: 6px;
 }
 
 .auth-card .sub-text {
-    font-size: 14px;
-    color: #64748b;
+    font-size: 13px;
+    color: var(--text-muted);
     margin-bottom: 20px;
 }
 
-/* Shared Form Styling */
+/* ==========================================================================
+   Forms & Controls
+   ========================================================================== */
 form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
 }
 
 input[type="text"],
@@ -100,156 +168,215 @@ input[type="email"],
 input[type="password"],
 textarea {
     width: 100%;
-    padding: 12px 14px;
+    padding: 10px 14px;
     font-size: 14px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     background-color: #ffffff;
-    color: #1e293b;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    color: var(--text-main);
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus,
+input:focus,
 textarea:focus {
     outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
-/* File Input */
 input[type="file"] {
     font-size: 13px;
-    color: #475569;
-    padding: 8px 0;
+    color: var(--text-muted);
 }
 
 input[type="file"]::file-selector-button {
     margin-right: 12px;
-    padding: 8px 14px;
-    border: none;
+    padding: 7px 12px;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    background-color: #e2e8f0;
-    color: #1e293b;
+    background-color: #f1f5f9;
+    color: var(--text-main);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background 0.15s ease;
 }
 
 input[type="file"]::file-selector-button:hover {
-    background-color: #cbd5e1;
+    background-color: #e2e8f0;
 }
 
 textarea {
     resize: vertical;
-    min-height: 120px;
+    min-height: 110px;
 }
 
-button[type="submit"] {
-    background-color: #1e293b;
+button[type="submit"],
+.btn-primary {
+    background-color: var(--primary);
     color: #ffffff;
     border: none;
     border-radius: 8px;
-    padding: 12px;
+    padding: 11px 16px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin-top: 5px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.15s ease;
 }
 
-button[type="submit"]:hover {
-    background-color: #2563eb;
+button[type="submit"]:hover,
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+button[type="submit"]:disabled {
+    background-color: #94a3b8;
+    cursor: not-allowed;
+}
+
+.spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .switch-auth {
     font-size: 13px;
-    color: #64748b;
-    margin-top: 18px;
+    color: var(--text-muted);
+    margin-top: 14px;
     text-align: center;
 }
 
-.switch-auth a,
-.auth-links a {
-    color: #2563eb;
+.switch-auth a {
+    color: var(--primary);
     text-decoration: none;
     font-weight: 500;
 }
 
-.switch-auth a:hover,
-.auth-links a:hover {
+.switch-auth a:hover {
     text-decoration: underline;
 }
 
-.auth-links {
-    margin-top: 10px;
-    text-align: center;
-    font-size: 13px;
-}
-
 /* ==========================================================================
-   Dashboard & History Cards
+   Dashboard & Analysis Visuals
    ========================================================================== */
-h2 {
-    margin-bottom: 20px;
-    color: #0f172a;
-    font-weight: 700;
-}
-
 .card {
-    background-color: #ffffff;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 30px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
 }
 
-.card h3 {
-    color: #1e293b;
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
     margin-top: 25px;
+}
+
+@media (max-width: 768px) {
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.result-box {
+    background: #fdfefe;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 18px;
+}
+
+.result-box h4 {
+    font-size: 15px;
     margin-bottom: 12px;
-    font-size: 17px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Pill / Tag badges for skills */
+.badge-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
     font-weight: 600;
-    border-bottom: 2px solid #f1f5f9;
-    padding-bottom: 6px;
 }
 
-.card form h3 {
-    margin-top: 0;
+.badge-skill {
+    background-color: var(--badge-skill-bg);
+    color: var(--badge-skill-text);
 }
 
-.card p {
-    color: #475569;
-    font-size: 14px;
+.badge-missing {
+    background-color: var(--badge-missing-bg);
+    color: var(--badge-missing-text);
 }
 
-/* List Results (Skills, Missing Skills, Questions, Roadmap) */
-.card ul {
-    list-style-type: none;
-    padding-left: 0;
-    margin-bottom: 15px;
+/* Roadmap step styling */
+.step-list {
+    list-style: none;
+    counter-reset: step-counter;
 }
 
-.card ul li {
+.step-list li {
+    counter-increment: step-counter;
     position: relative;
-    padding-left: 20px;
-    margin-bottom: 8px;
-    font-size: 14px;
+    padding-left: 32px;
+    margin-bottom: 12px;
+    font-size: 13.5px;
     color: #334155;
 }
 
-.card ul li::before {
-    content: "•";
+.step-list li::before {
+    content: counter(step-counter);
     position: absolute;
-    left: 4px;
-    color: #2563eb;
-    font-size: 18px;
-    line-height: 1;
+    left: 0;
+    top: 2px;
+    background-color: var(--primary);
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Highlighted resume preview in history */
-.card p strong {
-    color: #0f172a;
+/* Question list */
+.question-list {
+    list-style-type: none;
+}
+
+.question-list li {
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    background: #f8fafc;
+    border-left: 3px solid var(--primary);
+    border-radius: 4px;
+    font-size: 13.5px;
+    color: #1e293b;
 }

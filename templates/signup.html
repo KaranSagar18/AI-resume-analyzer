@@ -3,20 +3,30 @@
 {% block content %}
 <div class="auth-container">
     <div class="auth-card">
-        <h2>Create Account</h2>
-        <p class="sub-text">Use our AI powered Resume Analyzer to get feedback on your resume</p>
+        <h2>Create an Account</h2>
+        <p class="sub-text">Analyze your resume gaps and generate customized interview prep</p>
         
         {% if error %}
-            <p style="color: red; font-size: 14px;">{{ error }}</p>
+            <div class="alert alert-danger">{{ error }}</div>
         {% endif %}
 
         <form method="post">
-            <input type="email" name="email" placeholder="Enter your email" required>
-            <input type="password" name="password" placeholder="Create your password" required minlength="6">
-            <p class="sub-text">Use at least 6 characters</p>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="name@domain.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="At least 6 characters" required minlength="6">
+            </div>
+
             <button type="submit">Sign Up</button>
         </form>
-        <p class="switch-auth">Already have an account? <a href="/login">Login</a></p>
+
+        <p class="switch-auth">
+            Already registered? <a href="/login">Log in here</a>
+        </p>
     </div>
 </div>
 {% endblock %}
